@@ -46,6 +46,14 @@ jobs:
             "cmake;3.22.1" 2>&1 | grep -v "^Unzip\|^Decompressing\| KB/s\|  "
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> $GITHUB_ENV
 
+      - name: Download XEX from Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p pes
+          gh release download pre-release -p "default.xex" -D pes --repo ${{ github.repository }}
+          ls -lh pes/default.xex
+
       - name: Recompile XEX to C++ (ppc/)
         env:
           PROFILE: balanced
