@@ -29,13 +29,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Setup NDK
         run: |
-          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.2.12479018" 2>&1 | tail -5
-          echo "NDK_VERSION=27.2.12479018" >> $GITHUB_ENV
+          # GitHub-hosted runners already have ANDROID_HOME / ANDROID_SDK_ROOT set.
+          # We only need to install the right NDK version.
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "ndk;27.2.12479018" \
+            "cmake;3.22.1" 2>&1 | grep -v "^Unzip\|^Decompressing\| KB/s\|  "
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.2.12479018" >> $GITHUB_ENV
 
       - name: Cache Gradle
         uses: actions/cache@v4
