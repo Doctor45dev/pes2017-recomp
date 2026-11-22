@@ -227,7 +227,13 @@ namespace
             {
                 if (c.freq >= maxFreq * 95 / 100)
                     topo.primeMask |= (1u << c.id);
-                else if (c.freq >= maxFreq * 75 / 100)
+                // Threshold raised to 91% to correctly exclude Cortex-A55 cores
+                // on 2-cluster SoCs like MediaTek Helio G85/G88 (MT6768/MT6769)
+                // where A55@1800MHz and A75@2000MHz sit only 10% apart in frequency.
+                // At 75%, 1800MHz passes (1800 >= 1500) and ends up in perfMask,
+                // causing heavy game/Vulkan threads to run on the slow cluster.
+                // At 91%, threshold = 1820MHz, so only A75@2000MHz passes. ✓
+                else if (c.freq >= maxFreq * 91 / 100)
                     topo.perfMask |= (1u << c.id);
                 else
                     topo.workerMask |= (1u << c.id);
