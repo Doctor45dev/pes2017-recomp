@@ -225,7 +225,7 @@ namespace
             unsigned long maxFreq = freqs[0].freq;
             for (const auto& c : freqs)
             {
-                if (c.freq >= maxFreq * 95 / 100)
+                if (topo.primeMask == 0 && c.freq >= maxFreq * 95 / 100)
                     topo.primeMask |= (1u << c.id);
                 // Threshold raised to 91% to correctly exclude Cortex-A55 cores
                 // on 2-cluster SoCs like MediaTek Helio G85/G88 (MT6768/MT6769)
